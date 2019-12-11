@@ -1,57 +1,32 @@
 import React, { Component } from "react";
-import fetchObject from "../utils/fetchObject";
-import updateObject from "../utils/updateObject";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
-import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
-import Alert from "react-bootstrap/Alert";
 import Jumbotron from "react-bootstrap/Jumbotron";
-import ListGroup from "react-bootstrap/ListGroup";
+import Dropdown from "react-bootstrap/Dropdown";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import Alert from "react-bootstrap/Alert";
 import PRODUCT_IDS from "../constants/constants";
+import createObject from "../utils/createObject";
 
-class EditCartItem extends Component {
-  constructor(props) {
-    super(props);
+class AddCartItem extends Component {
+  constructor() {
+    super();
     this.state = {
-      customObject: {},
+      cartExpiration: "2020-03-30",
+      cartURL: "https://www.hylete.com/cart",
+      cartValue: "0",
+      cartCustomer: "",
       productIdsAndQ: [],
-      cartValue: "",
-      cartExpiration: "",
       success: false,
-      error: false,
-      profileLink: ""
+      error: false
     };
   }
 
   componentDidMount() {
-    const { id } = this.props.match.params;
-    fetchObject(id).then(res => {
-      const {
-        product_ids_and_quantities,
-        cart_value,
-        cart_expiration,
-        klaviyo_customer_id
-      } = res;
-      const newItems = product_ids_and_quantities.map((item, index) => {
-        var split = item.split(":");
-        return {
-          ID: split[0],
-          QTY: split[1]
-        };
-      });
-
-      this.setState({
-        customObject: { ...res },
-        cartValue: cart_value,
-        cartExpiration: cart_expiration,
-        productIdsAndQ: [...newItems],
-        profileLink: `https://www.klaviyo.com/profile/${klaviyo_customer_id}/connorbarley${id}klaviyocom`
-      });
-    });
+    console.log("loaded");
   }
 
   onChange = e => {
@@ -92,9 +67,14 @@ class EditCartItem extends Component {
     this.setState({ [e.target.name]: new_productIds_and_Q });
   };
 
-  onClick = async () => {
-    const { id } = this.props.match.params;
-    const { cartValue, cartExpiration, productIdsAndQ } = this.state;
+  handleSubmit = async () => {
+    const {
+      productIdsAndQ,
+      cartValue,
+      cartCustomer,
+      cartURL,
+      cartExpiration
+    } = this.state;
 
     let newProductIdsAndQ = productIdsAndQ
       .map(item => {
@@ -103,53 +83,52 @@ class EditCartItem extends Component {
       .join();
 
     const payload = {
-      update_fields: {
-        cart_value: cartValue,
-        cart_expiration: cartExpiration,
-        product_ids_and_quantities: newProductIdsAndQ
-      }
+      $id: cartCustomer,
+      $email: cartCustomer,
+      cart_url: cartURL,
+      cart_expiration: cartExpiration,
+      product_ids_and_quantities: newProductIdsAndQ,
+      cart_value: cartValue
     };
 
-    const response = await updateObject(id, payload).then(res => {
-      return res;
-    });
-
-    if (response.status === 200) {
-      this.setState({
-        success: true
-      });
-      setTimeout(() => {
-        this.setState({
-          success: false
-        });
-      }, 10000);
-    } else {
-      this.setState({
-        error: true
-      });
+    try {
+      const response = await createObject(payload);
+      if (response.status === 200) {
+        this.setState({ success: true });
+        setTimeout(() => {
+          this.setState({
+            success: false,
+            cartExpiration: "",
+            cartURL: "",
+            cartValue: "",
+            cartCustomer: "",
+            productIdsAndQ: []
+          });
+        }, 10000);
+      }
+    } catch (e) {
+      console.log(e);
+      this.setState({ success: false });
     }
   };
 
   render() {
     const {
-      customObject,
-      productIdsAndQ,
-      cartValue,
       cartExpiration,
+      cartURL,
+      cartValue,
+      cartCustomer,
+      productIdsAndQ,
       success,
-      error,
-      profileLink
+      error
     } = this.state;
 
-    var alert;
-
+    let alert;
     if (success) {
       alert = (
         <Alert variant="success">
-          Success! Cart with ID {customObject.cart_id} updated! Link here:{" "}
-          <Alert.Link href={profileLink} target="_blank">
-            here
-          </Alert.Link>
+          Success - cart created!
+          <Alert.Link href="/"> View All</Alert.Link>
         </Alert>
       );
     } else if (error) {
@@ -162,7 +141,7 @@ class EditCartItem extends Component {
       <Container className="p-4">
         <div>{alert}</div>
         <Jumbotron>
-          <h1 style={{ textAlign: "center" }}>Edit Cart</h1>
+          <h1 style={{ textAlign: "center" }}>Add Cart</h1>
           <Card
             style={{
               margin: "10px",
@@ -173,7 +152,6 @@ class EditCartItem extends Component {
           >
             <Card.Body>
               <Card.Title>
-                Cart ID: {customObject.cart_id}{" "}
                 <span style={{ display: "inline-block", float: "right" }}>
                   <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
@@ -207,10 +185,36 @@ class EditCartItem extends Component {
                   onChange={this.onChange}
                 />
               </InputGroup>
-              <Card.Text>
-                Cart URL: <a href={customObject.cart_url}>Cart</a>
-              </Card.Text>
-              <Card.Text>Customer: {customObject["$email"]}</Card.Text>
+              <InputGroup size="md" className="mb-3">
+                <InputGroup.Prepend>
+                  <InputGroup.Text id="inputGroup-sizing-sm">
+                    Cart URL:
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  aria-label="cartURL"
+                  aria-describedby="inputGroup-sizing-sm"
+                  defaultValue={cartURL}
+                  type="text"
+                  name="cartURL"
+                  onChange={this.onChange}
+                />
+              </InputGroup>
+              <InputGroup size="md" className="mb-3">
+                <InputGroup.Prepend>
+                  <InputGroup.Text id="inputGroup-sizing-sm">
+                    Customer:
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  aria-label="cartCustomer"
+                  aria-describedby="inputGroup-sizing-sm"
+                  defaultValue={cartCustomer}
+                  type="text"
+                  name="cartCustomer"
+                  onChange={this.onChange}
+                />
+              </InputGroup>
               <hr />
               <h5>Cart Info</h5>
               <table>
@@ -299,27 +303,10 @@ class EditCartItem extends Component {
                 </tbody>
               </table>
             </Card.Body>
-            <ListGroup className="list-group-flush">
-              <ListGroupItem>
-                <h5>Klaviyo Props</h5>
-              </ListGroupItem>
-              <ListGroupItem>
-                Klaviyo Created: {customObject.klaviyo_created}
-              </ListGroupItem>
-              <ListGroupItem>
-                Klaviyo Internal ID: {customObject.klaviyo_internal_id}
-              </ListGroupItem>
-              <ListGroupItem>
-                Klaviyo Updated: {customObject.klaviyo_updated}
-              </ListGroupItem>
-              <ListGroupItem>
-                Klaviyo Customer ID: {customObject.klaviyo_customer_id}
-              </ListGroupItem>
-            </ListGroup>
             <ListGroupItem>
-              <Card.Link href={"/cart/edit/" + customObject.cart_id + "#"}>
-                <Button variant="primary" onClick={this.onClick}>
-                  Update
+              <Card.Link href={"#"}>
+                <Button variant="primary" onClick={this.handleSubmit}>
+                  Create
                 </Button>
               </Card.Link>
             </ListGroupItem>
@@ -330,4 +317,4 @@ class EditCartItem extends Component {
   }
 }
 
-export default EditCartItem;
+export default AddCartItem;

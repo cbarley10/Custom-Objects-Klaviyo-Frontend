@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import React, { Component } from "react";
 import fetchObjects from "../utils/fetchObjects";
 import EditCartItem from "../components/EditCartItem";
+import AddCartItem from "../components/AddCartItem";
 import CartItems from "../components/CartItems";
 import Header from "../components/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -37,9 +38,12 @@ class AppContainer extends Component {
             ></Route>
             <Route
               exact
-              path="/object/edit/:id"
-              component={EditCartItem}
+              path="/cart/edit/:id"
+              render={props => (
+                <EditCartItem {...props} customObjects={customObjects} />
+              )}
             ></Route>
+            <Route exact path="/cart/add" component={AddCartItem}></Route>
           </Switch>
         </Router>
       </div>
