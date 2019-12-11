@@ -36,3 +36,14 @@ table {
 .pull-right {
   float: right;
 }
+
+#root .cardItems {
+  flex-basis: calc(50% - 40px);
+  margin: 20px;
+}
+
+.allCards {
+  display: flex;
+  flex-wrap: wrap;
+  flex-basis: 50%;
+}

@@ -22,10 +22,12 @@ const CartItems = props => {
         <h3 style={{ textAlign: "center" }}>
           Results For Custom Object: "Cart"
         </h3>
-        {customObjects &&
-          customObjects.map(obj => {
-            return <CartItem customObject={obj} key={obj.cart_id}></CartItem>;
-          })}
+        <div className="allCards">
+          {customObjects &&
+            customObjects.map(obj => {
+              return <CartItem customObject={obj} key={obj.cart_id}></CartItem>;
+            })}
+        </div>
       </Jumbotron>
       <div className="text-center">
         <Button

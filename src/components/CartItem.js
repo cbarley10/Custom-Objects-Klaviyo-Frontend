@@ -2,6 +2,7 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import deleteObject from "../utils/deleteObject";
+import CartInfoTable from "../components/CartInfoTable";
 import Modal from "react-bootstrap/Modal";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
@@ -16,13 +17,8 @@ const CartItem = props => {
 
   return (
     <Card
-      style={{
-        margin: "10px",
-        display: "inline-block",
-        width: "calc(50% - 20px)",
-        verticalAlign: "top"
-      }}
       key={customObject.cart_id}
+      className="d-flex align-items-stretch cardItems"
     >
       <Card.Body>
         <Card.Title>
@@ -38,26 +34,9 @@ const CartItem = props => {
         <Card.Text>Customer: {customObject["$email"]}</Card.Text>
         <hr />
         <h5>Cart Info</h5>
-        <table>
-          <thead>
-            <tr>
-              <th>Product ID</th>
-              <th>Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            {customObject.product_ids_and_quantities.map((item, index) => {
-              const id = item.split(":")[0];
-              const quantity = item.split(":")[1];
-              return (
-                <tr key={index}>
-                  <td>{id}</td>
-                  <td>{quantity}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <CartInfoTable
+          productIdsAndQ={customObject.product_ids_and_quantities}
+        ></CartInfoTable>
       </Card.Body>
       <ListGroup className="list-group-flush">
         <ListGroupItem>
@@ -107,26 +86,9 @@ const CartItem = props => {
             Cart URL: <a href={customObject.cart_url}>Cart</a>
           </div>
           <div>Customer: {customObject["$email"]}</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Product ID</th>
-                <th>Quantity</th>
-              </tr>
-            </thead>
-            <tbody>
-              {customObject.product_ids_and_quantities.map((item, index) => {
-                const id = item.split(":")[0];
-                const quantity = item.split(":")[1];
-                return (
-                  <tr key={index}>
-                    <td>{id}</td>
-                    <td>{quantity}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <CartInfoTable
+            productIdsAndQ={customObject.product_ids_and_quantities}
+          ></CartInfoTable>
         </Modal.Body>
         <Modal.Footer>
           <Card.Link href="/">

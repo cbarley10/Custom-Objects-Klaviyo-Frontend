@@ -34,7 +34,8 @@ class EditCartItem extends Component {
         product_ids_and_quantities,
         cart_value,
         cart_expiration,
-        klaviyo_customer_id
+        klaviyo_customer_id,
+        $email
       } = res;
       const newItems = product_ids_and_quantities.map((item, index) => {
         var split = item.split(":");
@@ -44,12 +45,14 @@ class EditCartItem extends Component {
         };
       });
 
+      const strippedEmail = $email.replace(/[^\w\s!?]/g, "");
+
       this.setState({
         customObject: { ...res },
         cartValue: cart_value,
         cartExpiration: cart_expiration,
         productIdsAndQ: [...newItems],
-        profileLink: `https://www.klaviyo.com/profile/${klaviyo_customer_id}/connorbarley${id}klaviyocom`
+        profileLink: `https://www.klaviyo.com/profile/${klaviyo_customer_id}/${strippedEmail}`
       });
     });
   }
@@ -163,14 +166,7 @@ class EditCartItem extends Component {
         <div>{alert}</div>
         <Jumbotron>
           <h1 style={{ textAlign: "center" }}>Edit Cart</h1>
-          <Card
-            style={{
-              margin: "10px",
-              display: "inline-block",
-              width: "calc(100% - 20px)",
-              verticalAlign: "top"
-            }}
-          >
+          <Card>
             <Card.Body>
               <Card.Title>
                 Cart ID: {customObject.cart_id}{" "}
