@@ -93,14 +93,14 @@ const CartItem = props => {
         <Modal.Footer>
           <Card.Link href="/">
             <Button
-              variant="success"
+              variant="danger"
               onClick={() => handleDelete(customObject.cart_id)}
             >
-              Yes
+              Delete
             </Button>
           </Card.Link>
-          <Button variant="danger" onClick={() => setLgShow(false)}>
-            No
+          <Button variant="default" onClick={() => setLgShow(false)}>
+            No, go back
           </Button>
         </Modal.Footer>
       </Modal>{" "}
