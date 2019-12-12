@@ -165,6 +165,14 @@ class EditCartItem extends Component {
       <Container className="p-4">
         <div>{alert}</div>
         <Jumbotron>
+          <a href={profileLink}>
+            Profile In Klaviyo{" "}
+            <img
+              src="../../new-window.png"
+              alt=""
+              style={{ maxWidth: "15px" }}
+            />
+          </a>
           <h1 style={{ textAlign: "center" }}>Edit Cart</h1>
           <Card>
             <Card.Body>
