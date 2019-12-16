@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import fetchObject from "../utils/fetchObject";
-import updateObject from "../utils/updateObject";
+import { fetchObject, updateObject } from "../utils/apis";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
@@ -165,7 +164,7 @@ class EditCartItem extends Component {
       <Container className="p-4">
         <div>{alert}</div>
         <Jumbotron>
-          <a href={profileLink}>
+          <a href={profileLink} target="_blank" rel="noopener noreferrer">
             Profile In Klaviyo{" "}
             <img
               src="../../new-window.png"

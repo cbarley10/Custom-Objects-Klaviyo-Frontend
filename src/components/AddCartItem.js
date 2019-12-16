@@ -9,7 +9,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import PRODUCT_IDS from "../constants/constants";
-import createObject from "../utils/createObject";
+import { createObject } from "../utils/apis";
 
 class AddCartItem extends Component {
   constructor() {

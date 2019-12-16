@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
-import deleteObject from "../utils/deleteObject";
+import { deleteObject } from "../utils/apis";
 import CartInfoTable from "../components/CartInfoTable";
 import Modal from "react-bootstrap/Modal";
 import ListGroupItem from "react-bootstrap/ListGroupItem";

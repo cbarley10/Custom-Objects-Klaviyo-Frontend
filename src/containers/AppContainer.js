@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import React, { Component } from "react";
-import fetchObjects from "../utils/fetchObjects";
+import { fetchObjects } from "../utils/apis";
 import EditCartItem from "../components/EditCartItem";
 import AddCartItem from "../components/AddCartItem";
 import CartItems from "../components/CartItems";
